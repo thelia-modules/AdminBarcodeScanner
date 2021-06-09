@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col-md-12 general-block-decorator">
+    <div class="row">
+        <div class="col-md-12 title title-without-tabs">
+          {intl d='adminbarcodescanner' l='Configure which table contains the real EAN code'}
+        </div>
+    </div>
+
+    <div class="barcode row">
+      <div class="col-md-12 title title-without-tabs">
+            <input type=hidden class="table-default-selected" name="default-selected" value={$main_table}></input>
+            <select class="table-opt-select form-control">
+              <option class="table-opt-default" value="default">{intl l="EAN" d="adminbarcodescanner"}</option>
+              <option class="table-opt-custom" value="custom">{intl l="EAN13" d="adminbarcodescanner"}</option>
+            </select>
+            <button class="btn-table-config btn btn-primary" type="submit">OK</button>
+            <div class="config-result-zone"></div>
+      </div>
+  </div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 general-block-decorator">
+    <div class="row">
+        <div class="col-md-8 title title-without-tabs">
+          {intl d='adminbarcodescanner' l='Find a product from its barcode'}
+        </div>
+
+        <div class="barcode col-md-4">
+            <button class="btn btn-lg btn-big-scan btn-primary btn-block btn-start btn-scan text-uppercase" data-product-id="" data-toggle="modal" data-target="#scanner" data-next="{url path='/admin/barcode'}">
+                <span class="glyphicon glyphicon-barcode"></span> {intl l='Scan a barcode' d='adminbarcodescanner'}
+            </button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 general-block-decorator">
+        <div class="row">
+            <div class="col-md-8 title title-without-tabs">
+                {intl d='adminbarcodescanner' l='Find last 10 orders with barcode'}
+            </div>
+
+            <div class="barcode col-md-4">
+                <button class="btn btn-lg btn-big-scan btn-primary btn-block btn-start btn-scan text-uppercase" data-product-id="" data-toggle="modal" data-target="#scanner" data-next="{url path='/admin/barcode/orders'}">
+                    <span class="glyphicon glyphicon-barcode"></span> {intl l='Scan a barcode' d='adminbarcodescanner'}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="scanner" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{intl l='Barcode Scan' d='adminbarcodescanner'}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="codebarre row">
+                    <input type="hidden" name="decoder_readers" value="ean">
+                    <input type="hidden" name="input-stream_constraints" value="800x600">
+                    <input type="hidden" name="locator_patch-size" value="medium">
+                    <input type="hidden" name="locator_half-sample" value="1" />
+                    <input type="hidden" name="numOfWorkers" value="4" />
+                    <input type="hidden" name="next_url" class="next-url" value="{url path='/admin/barcode'}"/>
+
+                    <input type="hidden" id="productId" name="productId" value="?" />
+
+                    <div class="col-sm-12 result-zone"></div>
+
+                    <div class="col-sm-12">
+                        <select class="form-control" id="videoSource"></select>
+                        <div id="interactive" class="viewport"></div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <input type="text" id="ipt-ean" class="ipt-ean" name="eantext"></input>
+                    </div>
+                </div><!-- /.layout -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-stop-scanner" data-dismiss="modal">{intl l="Cancel"}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

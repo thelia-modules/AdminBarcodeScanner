@@ -1,0 +1,32 @@
+<div class="barcode row">
+    <input type="hidden" name="decoder_readers" value="ean">
+    <input type="hidden" name="input-stream_constraints" value="800x600">
+    <input type="hidden" name="locator_patch-size" value="medium">
+    <input type="hidden" name="locator_half-sample" value="1" />
+    <input type="hidden" name="numOfWorkers" value="4" />
+
+    <div class="col-sm-12">
+        <button class="btn btn-lg btn-primary btn-block btn-start text-uppercase">
+            <span class="glyphicon glyphicon-barcode"></span> {intl l='Update barcode' d='adminbarcodescanner'}
+        </button>
+        <button class="btn btn-lg btn-danger btn-block btn-stop text-uppercase">
+            <span class="glyphicon glyphicon-stop"></span> {intl l='Stop'}
+        </button>
+        <button class="btn btn-lg btn-success btn-block btn-save text-uppercase">
+            <span class="glyphicon glyphicon-ok"></span> {intl l='Save barcode' d='adminbarcodescanner'}
+        </button>
+    </div>
+
+    <div class="camzone">
+        <div class="col-sm-12 result-zone"></div>
+
+        <div class="col-sm-12">
+            <select class="form-control" id="videoSource"></select>
+            <div id="interactive" class="viewport"></div>
+        </div>
+
+        <div class="col-sm-12">
+            <input type="text" id="ipt-ean" class="ipt-ean" name="eantext"></input>
+        </div>
+    </div>
+</div><!-- /.layout -->

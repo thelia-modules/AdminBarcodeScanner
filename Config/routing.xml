@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <!-- Redirect to product update page from its EAN code -->
+    <route id="admin_barcode_scanner.scan" path="/admin/barcode">
+        <default key="_controller">AdminBarcodeScanner\Controller\SearchController::search</default>
+    </route>
+
+    <!-- Redirect to order list from EAN code -->
+    <route id="admin_barcode_scanner.scan.orders" path="/admin/barcode/orders/{codeEan}">
+        <default key="_controller">AdminBarcodeScanner\Controller\SearchController::searchOrders</default>
+        <requirement key="codeEan">\d+</requirement>
+    </route>
+
+    <!-- Save a new EAN code -->
+    <route id="admin_barcode_scanner.set_code" path="/admin/barcode/{productId}/{codeEan}">
+        <default key="_controller">AdminBarcodeScanner\Controller\ProductController::setCode</default>
+        <requirement key="productId">\d+</requirement>
+        <requirement key="codeEan">\d+</requirement>
+    </route>
+
+    <!-- Set a new main table -->
+    <route id="admin_barcode_scanner.set_configuration" path="/admin/barcodeconfigure/{option}">
+        <default key="_controller">AdminBarcodeScanner\Controller\ConfigurationController::setDefaultTable</default>
+        <requirement key="option">[a-zA-Z]+</requirement>
+    </route>
+
+
+</routes>

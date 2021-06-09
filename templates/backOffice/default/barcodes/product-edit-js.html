@@ -1,0 +1,259 @@
+<script src="{javascript file='barcodes/assets/js/quagga.min.js' source='AdminBarcodeScanner'}"></script>
+dqdqsdqsd
+<script>
+    {literal}
+    function isMobileDevice() {
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    };
+
+    $(function() {
+        {/literal}
+        var scanSound = new Audio("{asset file='barcodes/assets/sounds/barcode-sound.mp3' source='AdminBarcodeScanner'}");
+        {literal}
+
+        if (isMobileDevice())
+          $('#ipt-ean').remove();
+
+        var last_camera = null;
+        var deviceId = null;
+        var deviceNumber = 0;
+
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+          navigator.mediaDevices.enumerateDevices()
+          .then(function(devices) {
+            devices.forEach(function(device) {
+              // select back camera by default
+              if (device.kind == "videoinput" && device.label.match(/back/) !== null) {
+                deviceId = device.deviceId;
+                $('#videoSource').append(`<option value="${device.deviceId}" selected="selected">${device.label}</option>`);
+                deviceNumber++;
+              }
+              else if (device.kind === "videoinput") {
+                last_camera = device.deviceId;
+                $('#videoSource').append(`<option value="${device.deviceId}">${device.label}</option>`);
+                deviceNumber++;
+              }
+            });
+            if (deviceId == null)
+              deviceId = last_camera;
+
+            if (deviceNumber == 1) {
+                // Useless to have a select if there's only one choice
+                $('#videoSource').remove();
+            }
+          })
+        }
+
+        $("#videoSource").on('change', function(e) {
+          if (_scannerIsRunning) {
+            Quagga.stop();
+          }
+          var App = makeApp($('#videoSource').val());
+          App.init();
+        })
+
+        var App = makeApp(deviceId);
+
+        var _scannerIsRunning = false;
+
+        $('.btn-start').on('click', function(ev) {
+            $('.camzone').show();
+
+            $('.btn-start').hide();
+            $('.btn-stop').show();
+            $('.btn-save').hide();
+            $('.ipt-ean').val('');
+            $('.ipt-ean').focus();
+
+            {/literal}
+            $('.btn-save').html('<span class="glyphicon glyphicon-ok"></span> {intl l="Save barcode" d="adminbarcodescanner"}');
+            {literal}
+
+            App.init();
+
+            ev.preventDefault();
+        });
+
+        $('.btn-stop').on('click', function(ev) {
+            $('.camzone').hide();
+
+            $('.btn-stop').hide();
+            $('.btn-start').show();
+
+            Quagga.stop();
+
+            ev.preventDefault();
+        });
+
+        $('.btn-save').on('click', function(ev) {
+          {/literal}
+          var code = $('.btn-save').data('code');
+          {literal}
+          if (code) {
+                $.ajax({
+                    {/literal}
+                    url: '{url path="/admin/barcode/{$smarty.get.product_id}"}' + '/' + code,
+                    {literal}
+                    success: function() {
+                        {/literal}
+                        $('.btn-save').html('<span class="glyphicon glyphicon-ok"></span> {intl l="New barcode saved !" d="adminbarcodescanner"}');
+                        {literal}
+                    },
+                    error: function(e) {
+                        {/literal}
+                        alert("{intl l='Sorry, something wrong happened. Please try again later.' d='adminbarcodescanner'}");
+                        {literal}
+                    }
+                }).always(function() {
+                    $('#scanner').modal('hide');
+                });
+          }
+          ev.preventDefault();
+        });
+
+        $('.ipt-ean').on('keypress',function(e) {
+          if(e.which == 13) {
+              var code = $('.ipt-ean').val()
+              if (code)
+                onDetectedCode(code);
+              e.preventDefault();
+          }
+        });
+
+        function onDetectedCode(code) {
+          // Just edit the ean code field without saving it
+          $('#ean_code_field').val(code);
+          $('.btn-stop').trigger('click');
+          $('.btn-save').data('code', code);
+
+          // Show the confirm button
+          $('.btn-save').show();
+        }
+
+        function makeApp(deviceId) {
+            return {
+            init : function() {
+                Quagga.init(this.state, function(err) {
+                    if (err) {
+                        return;
+                    }
+
+                    Quagga.start();
+                    _scannerIsRunning = true;
+                });
+            },
+            _accessByPath: function(obj, path, val) {
+                var parts = path.split('.'),
+                    depth = parts.length,
+                    setter = typeof val !== "undefined";
+
+                return parts.reduce(function(o, key, i) {
+                    if (setter && (i + 1) === depth) {
+                        o[key] = val;
+                    }
+                    return key in o ? o[key] : {};
+                }, obj);
+            },
+            _convertNameToState: function(name) {
+                return name.replace("_", ".").split("-").reduce(function(result, value) {
+                    return result + value.charAt(0).toUpperCase() + value.substring(1);
+                });
+            },
+            inputMapper: {
+                inputStream: {
+                    constraints: function(value){
+                        var values = value.split('x');
+                        return {
+                            width: parseInt(values[0]),
+                            height: parseInt(values[1])
+                        }
+                    }
+                },
+                numOfWorkers: function(value) {
+                    return parseInt(value);
+                },
+                decoder: {
+                    readers: function(value) {
+                        if (value === 'ean_extended') {
+                            return [{
+                                format: "ean_reader",
+                                config: {
+                                    supplements: [
+                                        'ean_5_reader', 'ean_2_reader'
+                                    ]
+                                }
+                            }];
+                        }
+                        return [{
+                            format: value + "_reader",
+                            config: {}
+                        }];
+                    }
+                }
+            },
+            state: {
+                inputStream: {
+                    type : "LiveStream",
+                    constraints: {
+                        width: 800,
+                        height: 600,
+                        deviceId: deviceId
+                    }
+                },
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                numOfWorkers: 4,
+                decoder: {
+                    readers : [{
+                        format: "ean_reader",
+                        config: {}
+                    }]
+                },
+                locate: true
+            },
+            lastResult : null
+        };
+      }
+
+        Quagga.onProcessed(function(result) {
+            var drawingCtx = Quagga.canvas.ctx.overlay,
+                drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                    result.boxes.filter(function (box) {
+                        return box !== result.box;
+                    }).forEach(function (box) {
+                        Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                    });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+                }
+            }
+        });
+
+        Quagga.onDetected(function(result) {
+            Quagga.stop();
+
+            try {
+                scanSound.play();
+            } catch (ex) {
+                // Nothing to do
+            }
+
+            var code = result.codeResult.code;
+
+            onDetectedCode(code);
+        });
+    });
+    {/literal}
+</script>

@@ -1,0 +1,50 @@
+.barcode .camzone {
+    display: none;
+}
+
+.barcode .btn-stop, .barcode .btn-save {
+    display: none;
+}
+
+.barcode #interactive.viewport {
+    width: 100%;
+    position: relative;
+    border: 1px solid #ccc;
+}
+
+.barcode #interactive.viewport canvas, video {
+    float: left;
+    width: 100%;
+}
+
+.barcode #interactive.viewport canvas.drawingBuffer,
+.barcode video.drawingBuffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.barcode .result-zone .alert {
+    margin: 5px 0;
+}
+
+.tree-articles ul, .tree-articles ul li {
+    list-style-type: none;
+}
+
+.tree-articles a.category {
+    display: block;
+    padding: 5px 0;
+    text-transform: uppercase;
+}
+.product-tree li.product {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    margin: 2px 0;
+}
+
+.ipt-ean {
+  width: 100%;
+  margin-top: 5px;
+}

@@ -1,0 +1,43 @@
+.barcode .camzone {
+    display: none;
+}
+
+.btn-big-scan {
+  padding: 20px;
+}
+
+.barcode .btn-stop {
+    display: none;
+}
+
+#interactive.viewport {
+    width: 100%;
+    position: relative;
+    border: 1px solid #ccc;
+}
+
+#interactive.viewport canvas, video {
+    float: left;
+    width: 100%;
+}
+
+canvas.drawingBuffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.alert {
+    margin: 5px 0;
+}
+
+.ipt-ean {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.table-opt-select {
+  width: 25%;
+  display: inline-block;
+}

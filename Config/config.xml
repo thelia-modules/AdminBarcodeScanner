@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config xmlns="http://thelia.net/schema/dic/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
+
+    <hooks>
+        <hook id="admin_barcode_scanner.hookmanager" class="AdminBarcodeScanner\Hook\HookManager">
+            <tag name="hook.event_listener" event="main.head-css" type="back" method="insertBarcodeCss" />
+            <tag name="hook.event_listener" event="product.edit-js" type="back" method="insertBarcodeJs" />
+            <tag name="hook.event_listener" event="product.details-details-form" type="back" method="onProductEditBottom" />
+            <tag name="hook.event_listener" event="main.top-menu-tools" type="back" method="onMainTopMenuTools" />
+            <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigurationJs" />
+            <tag name="hook.event_listener" event="module.configuration" type="back" method="onModuleConfiguration" />
+            <tag name="hook.event_listener" event="main.in-top-menu-items" type="back" />
+            <tag name="hook.event_listener" event="product.tab-content" type="back" method="onProductTabContent" />
+        </hook>
+    </hooks>
+</config>
