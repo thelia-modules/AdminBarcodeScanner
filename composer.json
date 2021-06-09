@@ -1,5 +1,5 @@
 {
-  "name": "cqfdev/admin-barcode-scanner-module",
+  "name": "thelia/admin-barcode-scanner-module",
   "license": "LGPL-3.0+",
   "type": "thelia-module",
   "require": {
